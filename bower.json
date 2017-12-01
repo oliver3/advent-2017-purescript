@@ -1,0 +1,18 @@
+{
+  "name": "advent-2017-purescript",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "^3.1.1",
+    "purescript-console": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0",
+    "purescript-spec": "^2.0.0",
+    "purescript-spec-discovery": "^2.0.0"
+  }
+}
