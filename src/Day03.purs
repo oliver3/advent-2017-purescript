@@ -2,6 +2,8 @@ module Day03 where
 
 import Prelude
 
+import Data.Array (catMaybes, (..))
+import Data.Foldable (sum)
 import Data.Map (Map, insert, lookup, singleton)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Ord (abs)
@@ -38,6 +40,12 @@ left East = North
 left South = East
 left West = South
 
+behind :: Heading -> Heading
+behind North = South
+behind East = West
+behind South = North
+behind West = East
+
 look :: (Heading -> Heading) -> TurtleGrid -> Maybe Int
 look rotation {turtle, grid} = lookup position grid
   where position = turtle.position + vector (rotation turtle.heading)
@@ -45,15 +53,15 @@ look rotation {turtle, grid} = lookup position grid
 turn :: (Heading -> Heading) -> TurtleGrid -> TurtleGrid
 turn rotation tg = tg {turtle {heading = rotation tg.turtle.heading}}
 
-forward :: TurtleGrid -> TurtleGrid
-forward tg = tg {turtle {position = position'}}
+move :: TurtleGrid -> TurtleGrid
+move tg = tg {turtle {position = position'}}
   where position' = tg.turtle.position + vector tg.turtle.heading
 
 walkSpiral :: TurtleGrid -> TurtleGrid
 walkSpiral turtlegrid =
   case look left turtlegrid of
-    Nothing -> (turn left >>> forward) turtlegrid
-    _ -> forward turtlegrid
+    Nothing -> (turn left >>> move) turtlegrid
+    _ -> move turtlegrid
 
 createTurtleGrid :: (TurtleGrid -> Int) -> Int -> TurtleGrid
 createTurtleGrid calc until = go newTurtleGrid
@@ -62,13 +70,21 @@ createTurtleGrid calc until = go newTurtleGrid
     go grid =
       if fromMaybe 0 (read grid) >= until
         then grid
-        else go grid'
+        else go grid''
           where
-            value' = calc grid
-            grid' = (walkSpiral >>> write value') grid
+            grid' = walkSpiral grid
+            grid'' = write (calc grid') grid'
 
-increaseValue :: TurtleGrid -> Int
-increaseValue tg = fromMaybe 0 (read tg) + 1
+increasePreviousValue :: TurtleGrid -> Int
+increasePreviousValue tg = fromMaybe 0 (look behind tg) + 1
+
+sumOfNeighbours :: TurtleGrid -> Int
+sumOfNeighbours tg = sum (catMaybes neighbours)
+  where
+    neighbours = do
+      x <- -1 .. 1
+      y <- -1 .. 1
+      pure $ lookup (tg.turtle.position + Tuple x y) tg.grid
 
 manhattan :: TurtleGrid -> Int
 manhattan {turtle: {position: Tuple x y}} = abs x + abs y
