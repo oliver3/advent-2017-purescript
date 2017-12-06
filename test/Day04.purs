@@ -23,3 +23,25 @@ spec =
       it "should validate a passphrase" do
         isValid "aa bb cc dd aaa" `shouldEqual` true
 
+    describe "passphrase anagram" do
+      it "should see an anagram" do
+        isAnagram "oiii" "ioii" `shouldEqual` true
+
+      it "should see not an anagram" do
+        isAnagram "abba" "caba" `shouldEqual` false
+
+      it "should validate a passphrase" do
+        isValidAnagram "abcde fghij" `shouldEqual` true
+
+      it "should invalidate a passphrase" do
+        isValidAnagram "abcde xyz ecdab" `shouldEqual` false
+
+      it "should validate a passphrase" do
+        isValidAnagram "a ab abc abd abf abj" `shouldEqual` true
+
+      it "should validate a passphrase" do
+        isValidAnagram "iiii oiii ooii oooi oooo" `shouldEqual` true
+
+      it "should invalidate a passphrase" do
+        isValidAnagram "oiii ioii" `shouldEqual` false
+
