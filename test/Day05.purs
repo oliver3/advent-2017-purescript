@@ -13,4 +13,7 @@ spec =
       it "should escape the maze" do
         escape [0, 3, 0, 1, -3] `shouldEqual` 5
 
+      it "should escape the maze" do
+        escape' [0, 3, 0, 1, -3] `shouldEqual` 10
+
 
